@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "insureguard.fullname" . }}-claims-frontend
+  labels:
+    {{- include "insureguard.labels" . | nindent 4 }}
+    app.kubernetes.io/name: claims-frontend
+spec:
+  replicas: {{ .Values.claimsFrontend.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: claims-frontend
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: claims-frontend
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      securityContext:
+        {{- include "insureguard.securityContext" . | nindent 8 }}
+      containers:
+        - name: claims-frontend
+          image: {{ .Values.claimsFrontend.image }}
+          securityContext:
+            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+          env:
+            - name: VITE_BACKEND_URL
+              value: "http://{{ include "insureguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}"
+          ports:
+            - containerPort: {{ .Values.claimsFrontend.port }}
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "insureguard.fullname" . }}-claims-frontend
+  labels:
+    {{- include "insureguard.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.claimsFrontend.port }}
+      targetPort: http
+      name: http
+  selector:
+    app.kubernetes.io/name: claims-frontend
+    app.kubernetes.io/instance: {{ .Release.Name }}

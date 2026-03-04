@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "insureguard.fullname" . }}-admin-dashboard
+  labels:
+    {{- include "insureguard.labels" . | nindent 4 }}
+    app.kubernetes.io/name: admin-dashboard
+spec:
+  replicas: {{ .Values.adminDashboard.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: admin-dashboard
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: admin-dashboard
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      securityContext:
+        {{- include "insureguard.securityContext" . | nindent 8 }}
+      containers:
+        - name: admin-dashboard
+          image: {{ .Values.adminDashboard.image }}
+          securityContext:
+            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+          env:
+            - name: VITE_BACKEND_URL
+              value: "http://{{ include "insureguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}"
+          ports:
+            - containerPort: {{ .Values.adminDashboard.port }}
+              name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "insureguard.fullname" . }}-admin-dashboard
+  labels:
+    {{- include "insureguard.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.adminDashboard.port }}
+      targetPort: http
+      name: http
+  selector:
+    app.kubernetes.io/name: admin-dashboard
+    app.kubernetes.io/instance: {{ .Release.Name }}

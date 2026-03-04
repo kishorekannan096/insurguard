@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "insureguard.fullname" . }}-nvclip
+  labels:
+    {{- include "insureguard.labels" . | nindent 4 }}
+    app.kubernetes.io/name: nvclip
+spec:
+  replicas: {{ .Values.nvclip.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nvclip
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nvclip
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      securityContext:
+        {{- include "insureguard.securityContext" . | nindent 8 }}
+      imagePullSecrets:
+        - name: {{ include "insureguard.imagePullSecretName" . }}
+      containers:
+        - name: nvclip
+          image: {{ .Values.nvclip.image }}
+          securityContext:
+            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+          env:
+            - name: NGC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "insureguard.nvidiaSecretName" . }}
+                  key: NGC_API_KEY
+          ports:
+            - containerPort: {{ .Values.nvclip.port }}
+              name: http
+          volumeMounts:
+            - name: nim-cache
+              mountPath: /opt/nim/.cache
+            - name: dshm
+              mountPath: /dev/shm
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+      volumes:
+        - name: nim-cache
+          emptyDir: {}
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.nvclip.shmSize }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "insureguard.fullname" . }}-nvclip
+  labels:
+    {{- include "insureguard.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.nvclip.port }}
+      targetPort: http
+      name: http
+  selector:
+    app.kubernetes.io/name: nvclip
+    app.kubernetes.io/instance: {{ .Release.Name }}
