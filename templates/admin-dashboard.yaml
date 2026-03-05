@@ -11,7 +11,7 @@ data:
     }
 
     server {
-        listen 80;
+        listen 8080;
         server_name _;
 
         root /usr/share/nginx/html;
@@ -63,7 +63,7 @@ spec:
             - name: VITE_BACKEND_URL
               value: "http://{{ include "insurguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}"
           ports:
-            - containerPort: {{ .Values.adminDashboard.port }}
+            - containerPort: 8080
               name: http
           volumeMounts:
             - name: nginx-conf

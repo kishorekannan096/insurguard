@@ -177,14 +177,14 @@ claimsBackend:
 claimsFrontend:
   image: ribinbaby/insureguard:claims-frontend
   replicas: 1
-  port: 80
+  port: 8080
   servicePort: 3100
 
 # 12. Admin Dashboard 
 adminDashboard:
   image: ribinbaby/insureguard:admin-dashboard
   replicas: 1
-  port: 80
+  port: 8080
   servicePort: 3200
 
 # 13. JupyterLab (development / debugging)

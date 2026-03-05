@@ -42,6 +42,8 @@ spec:
               value: /tmp/hf_cache
             - name: HOME
               value: /tmp
+            - name: XDG_CACHE_HOME
+              value: /tmp
           ports:
             - containerPort: {{ .Values.forgeryDetectionApi.port }}
               name: http

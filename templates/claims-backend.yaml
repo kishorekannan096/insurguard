@@ -27,7 +27,7 @@ spec:
           env:
             # Database
             - name: DATABASE_URL
-              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres:%s/claims_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
+              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres-0.%s-postgres:%s/claims_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
             # KYC Service
             - name: KYC_VERIFIER_URL
               value: {{ printf "http://%s-kyc-verifier:%s" (include "insurguard.fullname" .) (.Values.kycVerifier.port | toString) | quote }}

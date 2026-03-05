@@ -26,7 +26,7 @@ spec:
             {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: POSTGRES_URL
-              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres:%s/kyc_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
+              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres-0.%s-postgres:%s/kyc_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
             - name: MILVUS_HOST
               value: {{ printf "%s-milvus" (include "insurguard.fullname" .) | quote }}
             - name: MILVUS_PORT
