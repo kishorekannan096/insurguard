@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "insureguard.name" -}}
+{{- define "insurguard.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "insureguard.fullname" -}}
+{{- define "insurguard.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,17 +24,17 @@ Create a default fully qualified app name.
 {{/*
 Common labels
 */}}
-{{- define "insureguard.labels" -}}
-helm.sh/chart: {{ include "insureguard.name" . }}
+{{- define "insurguard.labels" -}}
+helm.sh/chart: {{ include "insurguard.name" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/part-of: insureguard
+app.kubernetes.io/part-of: insurguard
 {{- end }}
 
 {{/*
 Selector labels for a component
 */}}
-{{- define "insureguard.selectorLabels" -}}
+{{- define "insurguard.selectorLabels" -}}
 app.kubernetes.io/name: {{ .component }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -42,21 +42,21 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{/*
 NGC image pull secret name
 */}}
-{{- define "insureguard.imagePullSecretName" -}}
-{{ include "insureguard.fullname" . }}-ngc-pull
+{{- define "insurguard.imagePullSecretName" -}}
+{{ include "insurguard.fullname" . }}-ngc-pull
 {{- end }}
 
 {{/*
 NVIDIA API secret name
 */}}
-{{- define "insureguard.nvidiaSecretName" -}}
-{{ include "insureguard.fullname" . }}-nvidia-api
+{{- define "insurguard.nvidiaSecretName" -}}
+{{ include "insurguard.fullname" . }}-nvidia-api
 {{- end }}
 
 {{/*
 OpenShift SecurityContext for non-root containers
 */}}
-{{- define "insureguard.securityContext" -}}
+{{- define "insurguard.securityContext" -}}
 runAsNonRoot: true
 seccompProfile:
   type: RuntimeDefault
@@ -65,7 +65,7 @@ seccompProfile:
 {{/*
 OpenShift container-level SecurityContext
 */}}
-{{- define "insureguard.containerSecurityContext" -}}
+{{- define "insurguard.containerSecurityContext" -}}
 allowPrivilegeEscalation: false
 capabilities:
   drop: [ "ALL" ]

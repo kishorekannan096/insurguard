@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "insureguard.fullname" . }}-postgres-init
+  name: {{ include "insurguard.fullname" . }}-postgres-init
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 data:
   init-multiple-databases.sh: |
     #!/bin/bash
@@ -19,9 +19,9 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-postgres
+  name: {{ include "insurguard.fullname" . }}-postgres
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -36,12 +36,12 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "insureguard.fullname" . }}-postgres
+  name: {{ include "insurguard.fullname" . }}-postgres
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: postgres
 spec:
-  serviceName: {{ include "insureguard.fullname" . }}-postgres
+  serviceName: {{ include "insurguard.fullname" . }}-postgres
   replicas: {{ .Values.postgres.replicas }}
   selector:
     matchLabels:
@@ -54,13 +54,13 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
         fsGroup: 26
       containers:
         - name: postgres
           image: {{ .Values.postgres.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: POSTGRES_USER
               value: {{ .Values.postgres.user | quote }}
@@ -87,7 +87,7 @@ spec:
       volumes:
         - name: init-scripts
           configMap:
-            name: {{ include "insureguard.fullname" . }}-postgres-init
+            name: {{ include "insurguard.fullname" . }}-postgres-init
             defaultMode: 0755
   volumeClaimTemplates:
     - metadata:

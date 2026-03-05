@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "insureguard.fullname" . }}-kyc-verifier
+  name: {{ include "insurguard.fullname" . }}-kyc-verifier
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: kyc-verifier
 spec:
   replicas: {{ .Values.kycVerifier.replicas }}
@@ -18,31 +18,34 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:
         - name: kyc-verifier
           image: {{ .Values.kycVerifier.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: POSTGRES_URL
-              value: "postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insureguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/kyc_db"
+              value: "postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/kyc_db"
             - name: MILVUS_HOST
-              value: {{ include "insureguard.fullname" . }}-milvus
+              value: {{ include "insurguard.fullname" . }}-milvus
             - name: MILVUS_PORT
               value: {{ .Values.milvus.port | quote }}
             - name: OCR_URL
-              value: "http://{{ include "insureguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}/v1/chat/completions"
+              value: "http://{{ include "insurguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}/v1/chat/completions"
             - name: LLM_URL
-              value: "http://{{ include "insureguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}/v1/chat/completions"
+              value: "http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}/v1/chat/completions"
             - name: ANTISPOOF_URL
-              value: "http://{{ include "insureguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}/embed"
+              value: "http://{{ include "insurguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}/embed"
             - name: MINIO_ENDPOINT
-              value: "{{ include "insureguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}"
+              value: "{{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}"
             - name: MINIO_ACCESS_KEY
               value: {{ .Values.minio.accessKey | quote }}
             - name: MINIO_SECRET_KEY
               value: {{ .Values.minio.secretKey | quote }}
+            # LLM Model
+            - name: LLM_MODEL
+              value: {{ .Values.llmModel | quote }}
             {{- range $key, $val := .Values.kycVerifier.env }}
             - name: {{ $key }}
               value: {{ $val | quote }}
@@ -54,9 +57,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-kyc-verifier
+  name: {{ include "insurguard.fullname" . }}-kyc-verifier
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-minio
+  name: {{ include "insurguard.fullname" . }}-minio
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -21,12 +21,12 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "insureguard.fullname" . }}-minio
+  name: {{ include "insurguard.fullname" . }}-minio
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: minio
 spec:
-  serviceName: {{ include "insureguard.fullname" . }}-minio
+  serviceName: {{ include "insurguard.fullname" . }}-minio
   replicas: {{ .Values.minio.replicas }}
   selector:
     matchLabels:
@@ -39,12 +39,12 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:
         - name: minio
           image: {{ .Values.minio.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           command:
             - minio
             - server

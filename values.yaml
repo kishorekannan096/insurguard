@@ -9,11 +9,14 @@ ngcImagePull:
   password: ""   
   email: ""
 
-nameOverride: ""
+nameOverride: "insurguard"
 fullnameOverride: ""
 
 # OpenShift project / namespace
 namespace: ""
+
+# Global LLM model name
+llmModel: "meta/llama-3.1-8b-instruct"
 
 routes:
   claimsFrontend:
@@ -50,11 +53,11 @@ nemoretrieverParser:
   port: 8000
   servicePort: 8001
   shmSize: "16Gi"
-  gpuDeviceId: "3"
+  gpu: 1
   env:
     NIM_HTTP_API_PORT: "8000"
     NIM_TRITON_LOG_VERBOSE: "1"
-    CUDA_VISIBLE_DEVICES: "0"
+    CUDA_VISIBLE_DEVICES: "all"
 
 # 3. Llama Parser (LLM)
 llamaParser:
@@ -63,7 +66,7 @@ llamaParser:
   port: 8000
   servicePort: 8002
   shmSize: "16Gi"
-  gpuDeviceId: "0"
+  gpu: 1
   env:
     NIM_MAX_MODEL_LEN: "4096"
 
@@ -95,7 +98,7 @@ milvus:
   port: 19530
   metricsPort: 9091
   pvcSize: 20Gi
-  gpuDeviceId: "0"
+  gpu: 1
   gpuMemPoolSize: "2048;4096"
 
 # 5. PostgreSQL
@@ -116,8 +119,8 @@ kycVerifier:
   servicePort: 8095
   env:
     VECTOR_DIM: "512"
-    VERIFY_THRESHOLD: "0.75"
-    REVIEW_THRESHOLD: "0.60"
+    VERIFY_THRESHOLD: "15"
+    REVIEW_THRESHOLD: "5"
     ANTISPOOF_CONFIDENCE_MIN: "0.8"
 
 # 7. Forgery Detection API
@@ -126,19 +129,28 @@ forgeryDetectionApi:
   replicas: 1
   port: 8000
   servicePort: 8006
-  gpuDeviceId: "2"
+  gpu: 1
   env:
-    HIVE_AI_URL: "http://hive-ai-detection:8000"
     FORGERY_THRESHOLD: "0.7"
 
-#8. Nemotron VLM
+# 7b. Hive AI Detection (AI-generated content detection)
+hiveAiDetection:
+  image: ribinbaby/insureguard:ai-detection
+  replicas: 1
+  port: 8000
+  servicePort: 8070
+  gpu: 1
+  env:
+    CUDA_VISIBLE_DEVICES: "all"
+
+# 8. Nemotron VLM
 nemotronVlm:
   image: nvcr.io/nim/nvidia/llama-3.1-nemotron-nano-vl-8b-v1:latest
   replicas: 1
   port: 8000
   servicePort: 8004
   shmSize: "16Gi"
-  gpuDeviceId: "1"
+  gpu: 1
 
 # 9. NV-CLIP
 nvclip:
@@ -147,7 +159,7 @@ nvclip:
   port: 8000
   servicePort: 8005
   shmSize: "8Gi"
-  gpuDeviceId: "2"
+  gpu: 1
 
 # 10. Claims Backend 
 claimsBackend:
@@ -175,3 +187,12 @@ adminDashboard:
   replicas: 1
   port: 80
   servicePort: 3200
+
+# 13. JupyterLab (development / debugging)
+jupyterlab:
+  enabled: false
+  image: jupyter/base-notebook:latest
+  replicas: 1
+  port: 8888
+  servicePort: 8888
+  pvcSize: 5Gi

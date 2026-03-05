@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-etcd
+  name: {{ include "insurguard.fullname" . }}-etcd
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -18,12 +18,12 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "insureguard.fullname" . }}-etcd
+  name: {{ include "insurguard.fullname" . }}-etcd
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: etcd
 spec:
-  serviceName: {{ include "insureguard.fullname" . }}-etcd
+  serviceName: {{ include "insurguard.fullname" . }}-etcd
   replicas: {{ .Values.etcd.replicas }}
   selector:
     matchLabels:
@@ -36,12 +36,12 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:
         - name: etcd
           image: {{ .Values.etcd.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           command:
             - etcd
             - -advertise-client-urls=http://127.0.0.1:2379

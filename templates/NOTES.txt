@@ -8,37 +8,45 @@ Namespace: {{ .Release.Namespace }}
 ── OpenShift Routes ──────────────────────────────────────────
 
 {{- if .Values.routes.claimsFrontend.enabled }}
-  Claims Frontend:  oc get route {{ include "insureguard.fullname" . }}-claims-frontend -o jsonpath='{.spec.host}'
+  Claims Frontend:  oc get route {{ include "insurguard.fullname" . }}-claims-frontend -o jsonpath='{.spec.host}'
 {{- end }}
 {{- if .Values.routes.adminDashboard.enabled }}
-  Admin Dashboard:  oc get route {{ include "insureguard.fullname" . }}-admin-dashboard -o jsonpath='{.spec.host}'
+  Admin Dashboard:  oc get route {{ include "insurguard.fullname" . }}-admin-dashboard -o jsonpath='{.spec.host}'
 {{- end }}
 
 ── Internal Services ─────────────────────────────────────────
 
-  Claims Backend:     {{ include "insureguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}
-  KYC Verifier:       {{ include "insureguard.fullname" . }}-kyc-verifier:{{ .Values.kycVerifier.port }}
+  Claims Backend:     {{ include "insurguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}
+  KYC Verifier:       {{ include "insurguard.fullname" . }}-kyc-verifier:{{ .Values.kycVerifier.port }}
 
 ── AI / GPU Services ─────────────────────────────────────────
 
-  NeMo Retriever:     {{ include "insureguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}
-  Llama Parser:       {{ include "insureguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}
-  Nemotron VLM:       {{ include "insureguard.fullname" . }}-nemotron-vlm:{{ .Values.nemotronVlm.port }}
-  NV-CLIP:            {{ include "insureguard.fullname" . }}-nvclip:{{ .Values.nvclip.port }}
-  Forgery Detection:  {{ include "insureguard.fullname" . }}-forgery-detection-api:{{ .Values.forgeryDetectionApi.port }}
-  Face Embedding:     {{ include "insureguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}
+  NeMo Retriever:     {{ include "insurguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}
+  Llama Parser:       {{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}
+  Nemotron VLM:       {{ include "insurguard.fullname" . }}-nemotron-vlm:{{ .Values.nemotronVlm.port }}
+  NV-CLIP:            {{ include "insurguard.fullname" . }}-nvclip:{{ .Values.nvclip.port }}
+  Forgery Detection:  {{ include "insurguard.fullname" . }}-forgery-detection-api:{{ .Values.forgeryDetectionApi.port }}
+  Face Embedding:     {{ include "insurguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}
+  Hive AI Detection:  {{ include "insurguard.fullname" . }}-hive-ai-detection:{{ .Values.hiveAiDetection.port }}
 
 ── Infrastructure (StatefulSets) ─────────────────────────────
 
-  PostgreSQL:         {{ include "insureguard.fullname" . }}-postgres:{{ .Values.postgres.port }}
-  Milvus:             {{ include "insureguard.fullname" . }}-milvus:{{ .Values.milvus.port }}
-  MinIO:              {{ include "insureguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}
-  Etcd:               {{ include "insureguard.fullname" . }}-etcd:2379
+  PostgreSQL:         {{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}
+  Milvus:             {{ include "insurguard.fullname" . }}-milvus:{{ .Values.milvus.port }}
+  MinIO:              {{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}
+  Etcd:               {{ include "insurguard.fullname" . }}-etcd:2379
+
+── Utilities ─────────────────────────────────────────────────
+{{- if .Values.jupyterlab.enabled }}
+  JupyterLab:         {{ include "insurguard.fullname" . }}-jupyterlab:{{ .Values.jupyterlab.port }}
+{{- else }}
+  JupyterLab:         DISABLED (set jupyterlab.enabled=true to deploy)
+{{- end }}
 
 ── Quick Commands ────────────────────────────────────────────
 
   oc get pods -l app.kubernetes.io/instance={{ .Release.Name }}
-  oc logs -f deploy/{{ include "insureguard.fullname" . }}-claims-backend
+  oc logs -f deploy/{{ include "insurguard.fullname" . }}-claims-backend
 
 ── Install Command Used ──────────────────────────────────────
 

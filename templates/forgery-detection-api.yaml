@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "insureguard.fullname" . }}-forgery-detection-api
+  name: {{ include "insurguard.fullname" . }}-forgery-detection-api
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: forgery-detection-api
 spec:
   replicas: {{ .Values.forgeryDetectionApi.replicas }}
@@ -18,13 +18,15 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:
         - name: forgery-detection-api
           image: {{ .Values.forgeryDetectionApi.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
+            - name: HIVE_AI_URL
+              value: "http://{{ include "insurguard.fullname" . }}-hive-ai-detection:{{ .Values.hiveAiDetection.port }}"
             {{- range $key, $val := .Values.forgeryDetectionApi.env }}
             - name: {{ $key }}
               value: {{ $val | quote }}
@@ -32,21 +34,31 @@ spec:
             - name: NVIDIA_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "insureguard.nvidiaSecretName" . }}
+                  name: {{ include "insurguard.nvidiaSecretName" . }}
                   key: NVIDIA_API_KEY
+            - name: HF_HOME
+              value: /tmp/hf_cache
+            - name: TRANSFORMERS_CACHE
+              value: /tmp/hf_cache
           ports:
             - containerPort: {{ .Values.forgeryDetectionApi.port }}
               name: http
+          volumeMounts:
+            - name: hf-cache
+              mountPath: /tmp/hf_cache
           resources:
             limits:
-              nvidia.com/gpu: "1"
+              nvidia.com/gpu: {{ .Values.forgeryDetectionApi.gpu | quote }}
+      volumes:
+        - name: hf-cache
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-forgery-detection-api
+  name: {{ include "insurguard.fullname" . }}-forgery-detection-api
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:

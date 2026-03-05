@@ -1,9 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "insurguard.fullname" . }}-claims-frontend-nginx
+  labels:
+    {{- include "insurguard.labels" . | nindent 4 }}
+data:
+  default.conf.template: |
+    upstream claims-backend {
+        server {{ include "insurguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }};
+    }
+
+    server {
+        listen 80;
+        server_name _;
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /api/ {
+            proxy_pass http://claims-backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_read_timeout 300s;
+            proxy_send_timeout 300s;
+            client_max_body_size 50m;
+        }
+    }
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "insureguard.fullname" . }}-claims-frontend
+  name: {{ include "insurguard.fullname" . }}-claims-frontend
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: claims-frontend
 spec:
   replicas: {{ .Values.claimsFrontend.replicas }}
@@ -18,25 +53,32 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:
         - name: claims-frontend
           image: {{ .Values.claimsFrontend.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: VITE_BACKEND_URL
-              value: "http://{{ include "insureguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}"
+              value: "http://{{ include "insurguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }}"
           ports:
             - containerPort: {{ .Values.claimsFrontend.port }}
               name: http
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/templates
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: {{ include "insurguard.fullname" . }}-claims-frontend-nginx
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-claims-frontend
+  name: {{ include "insurguard.fullname" . }}-claims-frontend
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:

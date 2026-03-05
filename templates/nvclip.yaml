@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "insureguard.fullname" . }}-nvclip
+  name: {{ include "insurguard.fullname" . }}-nvclip
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
     app.kubernetes.io/name: nvclip
 spec:
   replicas: {{ .Values.nvclip.replicas }}
@@ -18,19 +18,19 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       securityContext:
-        {{- include "insureguard.securityContext" . | nindent 8 }}
+        {{- include "insurguard.securityContext" . | nindent 8 }}
       imagePullSecrets:
-        - name: {{ include "insureguard.imagePullSecretName" . }}
+        - name: {{ include "insurguard.imagePullSecretName" . }}
       containers:
         - name: nvclip
           image: {{ .Values.nvclip.image }}
           securityContext:
-            {{- include "insureguard.containerSecurityContext" . | nindent 12 }}
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: NGC_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "insureguard.nvidiaSecretName" . }}
+                  name: {{ include "insurguard.nvidiaSecretName" . }}
                   key: NGC_API_KEY
           ports:
             - containerPort: {{ .Values.nvclip.port }}
@@ -42,7 +42,7 @@ spec:
               mountPath: /dev/shm
           resources:
             limits:
-              nvidia.com/gpu: "1"
+              nvidia.com/gpu: {{ .Values.nvclip.gpu | quote }}
       volumes:
         - name: nim-cache
           emptyDir: {}
@@ -54,9 +54,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "insureguard.fullname" . }}-nvclip
+  name: {{ include "insurguard.fullname" . }}-nvclip
   labels:
-    {{- include "insureguard.labels" . | nindent 4 }}
+    {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
