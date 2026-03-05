@@ -26,19 +26,19 @@ spec:
             {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: POSTGRES_URL
-              value: postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/kyc_db
+              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres:%s/kyc_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
             - name: MILVUS_HOST
-              value: {{ include "insurguard.fullname" . }}-milvus
+              value: {{ printf "%s-milvus" (include "insurguard.fullname" .) | quote }}
             - name: MILVUS_PORT
               value: {{ .Values.milvus.port | quote }}
             - name: OCR_URL
-              value: http://{{ include "insurguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}/v1/chat/completions
+              value: {{ printf "http://%s-nemoretriever-parser:%s/v1/chat/completions" (include "insurguard.fullname" .) (.Values.nemoretrieverParser.port | toString) | quote }}
             - name: LLM_URL
-              value: http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}/v1/chat/completions
+              value: {{ printf "http://%s-llama-parser:%s/v1/chat/completions" (include "insurguard.fullname" .) (.Values.llamaParser.port | toString) | quote }}
             - name: ANTISPOOF_URL
-              value: http://{{ include "insurguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}/embed
+              value: {{ printf "http://%s-face-embedding-api:%s/embed" (include "insurguard.fullname" .) (.Values.faceEmbeddingApi.port | toString) | quote }}
             - name: MINIO_ENDPOINT
-              value: {{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}
+              value: {{ printf "%s-minio:%s" (include "insurguard.fullname" .) (.Values.minio.apiPort | toString) | quote }}
             - name: MINIO_ACCESS_KEY
               value: {{ .Values.minio.accessKey | quote }}
             - name: MINIO_SECRET_KEY

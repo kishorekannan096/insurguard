@@ -27,34 +27,34 @@ spec:
           env:
             # Database
             - name: DATABASE_URL
-              value: postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/claims_db
+              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres:%s/claims_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
             # KYC Service
             - name: KYC_VERIFIER_URL
-              value: http://{{ include "insurguard.fullname" . }}-kyc-verifier:{{ .Values.kycVerifier.port }}
+              value: {{ printf "http://%s-kyc-verifier:%s" (include "insurguard.fullname" .) (.Values.kycVerifier.port | toString) | quote }}
             # AI Services
             - name: HIVE_AI_URL
-              value: http://{{ include "insurguard.fullname" . }}-hive-ai-detection:{{ .Values.hiveAiDetection.port }}
+              value: {{ printf "http://%s-hive-ai-detection:%s" (include "insurguard.fullname" .) (.Values.hiveAiDetection.port | toString) | quote }}
             - name: NEMOTRON_VLM_URL
-              value: http://{{ include "insurguard.fullname" . }}-nemotron-vlm:{{ .Values.nemotronVlm.port }}
+              value: {{ printf "http://%s-nemotron-vlm:%s" (include "insurguard.fullname" .) (.Values.nemotronVlm.port | toString) | quote }}
             - name: NVCLIP_URL
-              value: http://{{ include "insurguard.fullname" . }}-nvclip:{{ .Values.nvclip.port }}
+              value: {{ printf "http://%s-nvclip:%s" (include "insurguard.fullname" .) (.Values.nvclip.port | toString) | quote }}
             - name: LLM_DECISION_URL
-              value: http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}
+              value: {{ printf "http://%s-llama-parser:%s" (include "insurguard.fullname" .) (.Values.llamaParser.port | toString) | quote }}
             # Milvus
             - name: MILVUS_HOST
-              value: {{ include "insurguard.fullname" . }}-milvus
+              value: {{ printf "%s-milvus" (include "insurguard.fullname" .) | quote }}
             - name: MILVUS_PORT
               value: {{ .Values.milvus.port | quote }}
             # MinIO
             - name: MINIO_ENDPOINT
-              value: {{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}
+              value: {{ printf "%s-minio:%s" (include "insurguard.fullname" .) (.Values.minio.apiPort | toString) | quote }}
             - name: MINIO_ACCESS_KEY
               value: {{ .Values.minio.accessKey | quote }}
             - name: MINIO_SECRET_KEY
               value: {{ .Values.minio.secretKey | quote }}
             # Forgery Detection
             - name: FORGERY_DETECTION_API_URL
-              value: http://{{ include "insurguard.fullname" . }}-forgery-detection-api:{{ .Values.forgeryDetectionApi.port }}
+              value: {{ printf "http://%s-forgery-detection-api:%s" (include "insurguard.fullname" .) (.Values.forgeryDetectionApi.port | toString) | quote }}
             # LLM Model
             - name: LLM_MODEL
               value: {{ .Values.llmModel | quote }}
