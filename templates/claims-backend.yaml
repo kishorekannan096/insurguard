@@ -27,7 +27,7 @@ spec:
           command:
             - sh
             - -c
-            - "until pg_isready -h {{ include "insurguard.fullname" . }}-postgres -p {{ .Values.postgres.port }}; do echo waiting for database; sleep 2; done;"
+            - "until pg_isready -h {{ include "insurguard.fullname" . }}-postgres-0.{{ include "insurguard.fullname" . }}-postgres -p {{ .Values.postgres.port }}; do echo waiting for database; sleep 2; done;"
       containers:
         - name: claims-backend
           image: {{ .Values.claimsBackend.image }}

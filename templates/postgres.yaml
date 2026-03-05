@@ -55,7 +55,6 @@ spec:
     spec:
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
-        fsGroup: 26
       containers:
         - name: postgres
           image: {{ .Values.postgres.image }}
