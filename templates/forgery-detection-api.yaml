@@ -40,6 +40,8 @@ spec:
               value: /tmp/hf_cache
             - name: TRANSFORMERS_CACHE
               value: /tmp/hf_cache
+            - name: HOME
+              value: /tmp
           ports:
             - containerPort: {{ .Values.forgeryDetectionApi.port }}
               name: http

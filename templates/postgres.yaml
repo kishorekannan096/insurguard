@@ -24,7 +24,6 @@ metadata:
     {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
-  clusterIP: None
   ports:
     - port: {{ .Values.postgres.port }}
       targetPort: postgres
