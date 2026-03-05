@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "insurguard.labels" . | nindent 4 }}
 data:
-  default.conf.template: |
+  default.conf: |
     upstream claims-backend {
         server {{ include "insurguard.fullname" . }}-claims-backend:{{ .Values.claimsBackend.port }};
     }
@@ -67,7 +67,7 @@ spec:
               name: http
           volumeMounts:
             - name: nginx-conf
-              mountPath: /etc/nginx/templates
+              mountPath: /etc/nginx/conf.d
       volumes:
         - name: nginx-conf
           configMap:

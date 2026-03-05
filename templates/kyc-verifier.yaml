@@ -26,19 +26,19 @@ spec:
             {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: POSTGRES_URL
-              value: "postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/kyc_db"
+              value: postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/kyc_db
             - name: MILVUS_HOST
               value: {{ include "insurguard.fullname" . }}-milvus
             - name: MILVUS_PORT
               value: {{ .Values.milvus.port | quote }}
             - name: OCR_URL
-              value: "http://{{ include "insurguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}/v1/chat/completions"
+              value: http://{{ include "insurguard.fullname" . }}-nemoretriever-parser:{{ .Values.nemoretrieverParser.port }}/v1/chat/completions
             - name: LLM_URL
-              value: "http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}/v1/chat/completions"
+              value: http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}/v1/chat/completions
             - name: ANTISPOOF_URL
-              value: "http://{{ include "insurguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}/embed"
+              value: http://{{ include "insurguard.fullname" . }}-face-embedding-api:{{ .Values.faceEmbeddingApi.port }}/embed
             - name: MINIO_ENDPOINT
-              value: "{{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}"
+              value: {{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}
             - name: MINIO_ACCESS_KEY
               value: {{ .Values.minio.accessKey | quote }}
             - name: MINIO_SECRET_KEY

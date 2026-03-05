@@ -27,19 +27,19 @@ spec:
           env:
             # Database
             - name: DATABASE_URL
-              value: "postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/claims_db"
+              value: postgresql+asyncpg://{{ .Values.postgres.user }}:{{ .Values.postgres.password }}@{{ include "insurguard.fullname" . }}-postgres:{{ .Values.postgres.port }}/claims_db
             # KYC Service
             - name: KYC_VERIFIER_URL
-              value: "http://{{ include "insurguard.fullname" . }}-kyc-verifier:{{ .Values.kycVerifier.port }}"
+              value: http://{{ include "insurguard.fullname" . }}-kyc-verifier:{{ .Values.kycVerifier.port }}
             # AI Services
             - name: HIVE_AI_URL
-              value: "http://{{ include "insurguard.fullname" . }}-hive-ai-detection:{{ .Values.hiveAiDetection.port }}"
+              value: http://{{ include "insurguard.fullname" . }}-hive-ai-detection:{{ .Values.hiveAiDetection.port }}
             - name: NEMOTRON_VLM_URL
-              value: "http://{{ include "insurguard.fullname" . }}-nemotron-vlm:{{ .Values.nemotronVlm.port }}"
+              value: http://{{ include "insurguard.fullname" . }}-nemotron-vlm:{{ .Values.nemotronVlm.port }}
             - name: NVCLIP_URL
-              value: "http://{{ include "insurguard.fullname" . }}-nvclip:{{ .Values.nvclip.port }}"
+              value: http://{{ include "insurguard.fullname" . }}-nvclip:{{ .Values.nvclip.port }}
             - name: LLM_DECISION_URL
-              value: "http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}"
+              value: http://{{ include "insurguard.fullname" . }}-llama-parser:{{ .Values.llamaParser.port }}
             # Milvus
             - name: MILVUS_HOST
               value: {{ include "insurguard.fullname" . }}-milvus
@@ -47,14 +47,14 @@ spec:
               value: {{ .Values.milvus.port | quote }}
             # MinIO
             - name: MINIO_ENDPOINT
-              value: "{{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}"
+              value: {{ include "insurguard.fullname" . }}-minio:{{ .Values.minio.apiPort }}
             - name: MINIO_ACCESS_KEY
               value: {{ .Values.minio.accessKey | quote }}
             - name: MINIO_SECRET_KEY
               value: {{ .Values.minio.secretKey | quote }}
             # Forgery Detection
             - name: FORGERY_DETECTION_API_URL
-              value: "http://{{ include "insurguard.fullname" . }}-forgery-detection-api:{{ .Values.forgeryDetectionApi.port }}"
+              value: http://{{ include "insurguard.fullname" . }}-forgery-detection-api:{{ .Values.forgeryDetectionApi.port }}
             # LLM Model
             - name: LLM_MODEL
               value: {{ .Values.llmModel | quote }}

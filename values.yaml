@@ -57,7 +57,6 @@ nemoretrieverParser:
   env:
     NIM_HTTP_API_PORT: "8000"
     NIM_TRITON_LOG_VERBOSE: "1"
-    CUDA_VISIBLE_DEVICES: "all"
 
 # 3. Llama Parser (LLM)
 llamaParser:
@@ -132,16 +131,16 @@ forgeryDetectionApi:
   gpu: 1
   env:
     FORGERY_THRESHOLD: "0.7"
+    UPLOAD_DIR: "/tmp/uploads"
 
 # 7b. Hive AI Detection (AI-generated content detection)
 hiveAiDetection:
-  image: ribinbaby/insureguard:ai-detection
+  image: ribinbaby/insureguard:hive-ai-detection
   replicas: 1
   port: 8000
   servicePort: 8070
   gpu: 1
-  env:
-    CUDA_VISIBLE_DEVICES: "all"
+  env: {}
 
 # 8. Nemotron VLM
 nemotronVlm:
