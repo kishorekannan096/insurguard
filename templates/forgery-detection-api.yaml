@@ -50,11 +50,15 @@ spec:
           volumeMounts:
             - name: tmp-volume
               mountPath: /tmp
+            - name: home-ubuntu
+              mountPath: /home/ubuntu
           resources:
             limits:
               nvidia.com/gpu: {{ .Values.forgeryDetectionApi.gpu | quote }}
       volumes:
         - name: tmp-volume
+          emptyDir: {}
+        - name: home-ubuntu
           emptyDir: {}
 ---
 apiVersion: v1

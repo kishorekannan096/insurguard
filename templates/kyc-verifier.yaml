@@ -19,6 +19,15 @@ spec:
     spec:
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:15
+          securityContext:
+            {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
+          command:
+            - sh
+            - -c
+            - "until pg_isready -h {{ include "insurguard.fullname" . }}-postgres -p {{ .Values.postgres.port }}; do echo waiting for database; sleep 2; done;"
       containers:
         - name: kyc-verifier
           image: {{ .Values.kycVerifier.image }}
@@ -26,7 +35,7 @@ spec:
             {{- include "insurguard.containerSecurityContext" . | nindent 12 }}
           env:
             - name: POSTGRES_URL
-              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres-0.%s-postgres:%s/kyc_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
+              value: {{ printf "postgresql+asyncpg://%s:%s@%s-postgres:%s/kyc_db" .Values.postgres.user .Values.postgres.password (include "insurguard.fullname" .) (.Values.postgres.port | toString) | quote }}
             - name: MILVUS_HOST
               value: {{ printf "%s-milvus" (include "insurguard.fullname" .) | quote }}
             - name: MILVUS_PORT
