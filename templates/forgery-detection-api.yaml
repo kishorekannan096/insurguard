@@ -16,7 +16,9 @@ spec:
       labels:
         app.kubernetes.io/name: forgery-detection-api
         app.kubernetes.io/instance: {{ .Release.Name }}
+        insurguard/gpu-workload: "true"
     spec:
+      {{- include "insurguard.gpuTopologySpread" . | nindent 6 }}
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:
@@ -44,6 +46,8 @@ spec:
               value: /tmp
             - name: XDG_CACHE_HOME
               value: /tmp
+            - name: PYTORCH_CUDA_ALLOC_CONF
+              value: "max_split_size_mb:128"
           ports:
             - containerPort: {{ .Values.forgeryDetectionApi.port }}
               name: http

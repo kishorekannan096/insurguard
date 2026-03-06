@@ -16,7 +16,11 @@ spec:
       labels:
         app.kubernetes.io/name: llama-parser
         app.kubernetes.io/instance: {{ .Release.Name }}
+        insurguard/gpu-workload: "true"
+        insurguard/nim-heavy: "true"
     spec:
+      {{- include "insurguard.gpuTopologySpread" . | nindent 6 }}
+      {{- include "insurguard.nimAntiAffinity" (dict "component" "llama-parser" "Release" .Release) | nindent 6 }}
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
       imagePullSecrets:

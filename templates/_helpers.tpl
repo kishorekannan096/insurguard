@@ -70,3 +70,37 @@ allowPrivilegeEscalation: false
 capabilities:
   drop: [ "ALL" ]
 {{- end }}
+
+{{/*
+TopologySpreadConstraints — spread GPU pods across nodes (maxSkew 1)
+*/}}
+{{- define "insurguard.gpuTopologySpread" -}}
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        insurguard/gpu-workload: "true"
+{{- end }}
+
+{{/*
+Anti-affinity — prevent heavy NIM services from landing on the same node.
+Pass the component name as .component in the context.
+*/}}
+{{- define "insurguard.nimAntiAffinity" -}}
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: insurguard/nim-heavy
+                operator: In
+                values: [ "true" ]
+              - key: app.kubernetes.io/name
+                operator: NotIn
+                values: [ "{{ .component }}" ]
+          topologyKey: kubernetes.io/hostname
+{{- end }}
