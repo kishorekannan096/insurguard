@@ -1,11 +1,17 @@
 
 nvidiaApiKey: ""
 
-# GPU node targeting
-# "l40s"    → schedules all GPU workloads on wn1/wn2 (L40S cards)
-# "rtx6000" → schedules all GPU workloads on c845  (RTX 6000 Blackwell)
+# GPU node targeting via nodeSelector (supports any label key/value)
+# Override at install time with --set gpu.nodeSelector."nvidia\.com/gpu\.product"=<value>
+#
+# L40S nodes (wn1, wn2):
+#   --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-L40S-SHARED
+#
+# RTX 6000 Blackwell node (c845):
+#   --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
 gpu:
-  target: "l40s"
+  nodeSelector:
+    nvidia.com/gpu.product: "NVIDIA-L40S-SHARED"
 
 # Storage class for all PersistentVolumeClaims
 # Leave empty ("") to use the cluster default storage class

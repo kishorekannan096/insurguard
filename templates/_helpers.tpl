@@ -85,14 +85,19 @@ topologySpreadConstraints:
 {{- end }}
 
 {{/*
-GPU node selector — pin all GPU workloads to the chosen GPU pool.
-gpu.target: "l40s"    → wn1.apjcaipod.dcloud.cisco.com, wn2.apjcaipod.dcloud.cisco.com
-gpu.target: "rtx6000" → c845.apjcaipod.dcloud.cisco.com
-Label nodes once with: oc label node <hostname> insurguard/gpu-type=<value>
+GPU node selector — pin all GPU workloads to nodes matching gpu.nodeSelector.
+The map is passed as-is, so any label key/value works (e.g. nvidia.com/gpu.product).
+Override at install time:
+  --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-L40S-SHARED
+  --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
 */}}
 {{- define "insurguard.gpuNodeSelector" -}}
+{{- if .Values.gpu.nodeSelector }}
 nodeSelector:
-  insurguard/gpu-type: {{ .Values.gpu.target | quote }}
+  {{- range $key, $val := .Values.gpu.nodeSelector }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
