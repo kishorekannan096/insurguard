@@ -19,6 +19,7 @@ spec:
         insurguard/gpu-workload: "true"
     spec:
       {{- include "insurguard.gpuTopologySpread" . | nindent 6 }}
+      {{- include "insurguard.gpuNodeSelector" . | nindent 6 }}
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
       imagePullSecrets:

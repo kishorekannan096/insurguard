@@ -1,6 +1,16 @@
 
 nvidiaApiKey: ""
 
+# GPU node targeting
+# "l40s"    → schedules all GPU workloads on wn1/wn2 (L40S cards)
+# "rtx6000" → schedules all GPU workloads on c845  (RTX 6000 Blackwell)
+gpu:
+  target: "l40s"
+
+# Storage class for all PersistentVolumeClaims
+# Leave empty ("") to use the cluster default storage class
+storageClass: "lvms-vg1"
+
 # NGC Docker Registry pull secret (for nvcr.io images)
 ngcImagePull:
   enabled: true

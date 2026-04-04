@@ -21,6 +21,7 @@ spec:
     spec:
       {{- include "insurguard.gpuTopologySpread" . | nindent 6 }}
       {{- include "insurguard.nimAntiAffinity" (dict "component" "nemoretriever-parser" "Release" .Release) | nindent 6 }}
+      {{- include "insurguard.gpuNodeSelector" . | nindent 6 }}
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
       imagePullSecrets:

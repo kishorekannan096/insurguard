@@ -85,6 +85,17 @@ topologySpreadConstraints:
 {{- end }}
 
 {{/*
+GPU node selector — pin all GPU workloads to the chosen GPU pool.
+gpu.target: "l40s"    → wn1.apjcaipod.dcloud.cisco.com, wn2.apjcaipod.dcloud.cisco.com
+gpu.target: "rtx6000" → c845.apjcaipod.dcloud.cisco.com
+Label nodes once with: oc label node <hostname> insurguard/gpu-type=<value>
+*/}}
+{{- define "insurguard.gpuNodeSelector" -}}
+nodeSelector:
+  insurguard/gpu-type: {{ .Values.gpu.target | quote }}
+{{- end }}
+
+{{/*
 Anti-affinity — prevent heavy NIM services from landing on the same node.
 Pass the component name as .component in the context.
 */}}

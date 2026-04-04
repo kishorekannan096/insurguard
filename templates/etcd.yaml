@@ -71,6 +71,9 @@ spec:
         name: data
       spec:
         accessModes: [ ReadWriteOnce ]
+        {{- if .Values.storageClass }}
+        storageClassName: {{ .Values.storageClass | quote }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.etcd.pvcSize }}

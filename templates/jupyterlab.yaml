@@ -54,6 +54,9 @@ metadata:
     {{- include "insurguard.labels" . | nindent 4 }}
 spec:
   accessModes: [ ReadWriteOnce ]
+  {{- if .Values.storageClass }}
+  storageClassName: {{ .Values.storageClass | quote }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.jupyterlab.pvcSize }}
