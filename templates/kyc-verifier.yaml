@@ -41,7 +41,11 @@ spec:
             - name: MILVUS_PORT
               value: {{ .Values.milvus.port | quote }}
             - name: OCR_URL
-              value: {{ printf "http://%s-nemoretriever-parser:%s/v1/infer" (include "insurguard.fullname" .) (.Values.nemoretrieverParser.port | toString) | quote }}
+            {{- if .Values.nemoretrieverParser.enabled }}
+              value: {{ printf "http://%s-nemoretriever-parser:%s/v1/chat/completions" (include "insurguard.fullname" .) (.Values.nemoretrieverParser.port | toString) | quote }}
+            {{- else }}
+              value: {{ printf "http://%s-nemotron-vlm:%s/v1/chat/completions" (include "insurguard.fullname" .) (.Values.nemotronVlm.port | toString) | quote }}
+            {{- end }}
             - name: LLM_URL
               value: {{ printf "http://%s-llama-parser:%s/v1/chat/completions" (include "insurguard.fullname" .) (.Values.llamaParser.port | toString) | quote }}
             - name: ANTISPOOF_URL

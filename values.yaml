@@ -62,10 +62,11 @@ faceEmbeddingApi:
     DEVICE_ID: "0"
 
 # 2. NeMo Retriever Parser
-# NOTE: If deploying on RTX 6000 Blackwell, use an image built with TRT-LLM >= 0.17.0
-# or set NIM_DISABLE_TRTLLM: "1" to bypass TRT engine build failures.
+# NOTE: nemoretriever-parse does not support RTX 6000 Blackwell (TRT-LLM 0.16 lacks sm_100).
+# Set enabled: false on Blackwell — OCR_URL will fall back to nemotron-vlm automatically.
 nemoretrieverParser:
-  image: nvcr.io/nvidia/nemo-microservices/nemoretriever-ocr-v1:latest
+  enabled: true
+  image: nvcr.io/nim/nvidia/nemoretriever-parse:latest
   replicas: 1
   port: 8000
   servicePort: 8001
