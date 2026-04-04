@@ -65,7 +65,7 @@ faceEmbeddingApi:
 # NOTE: If deploying on RTX 6000 Blackwell, use an image built with TRT-LLM >= 0.17.0
 # or set NIM_DISABLE_TRTLLM: "1" to bypass TRT engine build failures.
 nemoretrieverParser:
-  image: nvcr.io/nim/nvidia/nemoretriever-parse:latest
+  image: nvcr.io/nvidia/nemo-microservices/nemoretriever-ocr-v1:latest
   replicas: 1
   port: 8000
   servicePort: 8001
