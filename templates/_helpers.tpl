@@ -85,18 +85,15 @@ topologySpreadConstraints:
 {{- end }}
 
 {{/*
-GPU node selector — pin all GPU workloads to nodes matching gpu.nodeSelector.
-The map is passed as-is, so any label key/value works (e.g. nvidia.com/gpu.product).
-Override at install time:
-  --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-L40S-SHARED
-  --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
+GPU node selector — pins all GPU workloads to nodes with the given nvidia.com/gpu.product label.
+Override at install time with --set gpu.product=<value>
+  L40S:    --set gpu.product=NVIDIA-L40S-SHARED
+  RTX6000: --set gpu.product=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
 */}}
 {{- define "insurguard.gpuNodeSelector" -}}
-{{- if .Values.gpu.nodeSelector }}
+{{- if .Values.gpu.product }}
 nodeSelector:
-  {{- range $key, $val := .Values.gpu.nodeSelector }}
-  {{ $key }}: {{ $val | quote }}
-  {{- end }}
+  nvidia.com/gpu.product: {{ .Values.gpu.product | quote }}
 {{- end }}
 {{- end }}
 

@@ -1,17 +1,16 @@
 
 nvidiaApiKey: ""
 
-# GPU node targeting via nodeSelector (supports any label key/value)
-# Override at install time with --set gpu.nodeSelector."nvidia\.com/gpu\.product"=<value>
+# GPU node targeting — only the value changes between GPU pools
+# Override at install time with --set gpu.product=<value>
 #
 # L40S nodes (wn1, wn2):
-#   --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-L40S-SHARED
+#   --set gpu.product=NVIDIA-L40S-SHARED
 #
 # RTX 6000 Blackwell node (c845):
-#   --set gpu.nodeSelector."nvidia\.com/gpu\.product"=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
+#   --set gpu.product=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
 gpu:
-  nodeSelector:
-    nvidia.com/gpu.product: "NVIDIA-L40S-SHARED"
+  product: "NVIDIA-L40S-SHARED"
 
 # Storage class for all PersistentVolumeClaims
 # Leave empty ("") to use the cluster default storage class
