@@ -132,7 +132,7 @@ postgres:
 
 # 6. KYC Verifier
 kycVerifier:
-  image: ribinbaby/insureguard:kyc-verifier
+  image: ribinbaby/insureguard:kyc-verifier-v1
   replicas: 1
   port: 8000
   servicePort: 8095
