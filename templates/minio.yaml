@@ -38,6 +38,7 @@ spec:
         app.kubernetes.io/name: minio
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      {{- include "insurguard.gpuNodeSelector" . | nindent 6 }}
       securityContext:
         {{- include "insurguard.securityContext" . | nindent 8 }}
       containers:

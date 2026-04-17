@@ -85,7 +85,8 @@ topologySpreadConstraints:
 {{- end }}
 
 {{/*
-GPU node selector — pins all GPU workloads to nodes with the given nvidia.com/gpu.product label.
+Node selector — pins ALL workloads (GPU and non-GPU) to nodes with the given nvidia.com/gpu.product label.
+This keeps the whole release on a single GPU pool so non-GPU pods don't drift onto other nodes.
 Override at install time with --set gpu.product=<value>
   L40S:    --set gpu.product=NVIDIA-L40S-SHARED
   RTX6000: --set gpu.product=NVIDIA-RTX-PRO-6000-Blackwell-Server-Edition-SHARED
